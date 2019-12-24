@@ -192,44 +192,47 @@ def populate_subscriptions(subscriptions):
 
 def upgrade():
     billing_cycles = op.create_table('billing_cycles',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('start_date', sa.TIMESTAMP(timezone=True), nullable=True),
-        sa.Column('end_date', sa.TIMESTAMP(timezone=True), nullable=True),
-        sa.PrimaryKeyConstraint('id')
-    )
+                                     sa.Column('id', sa.Integer(), nullable=False),
+                                     sa.Column('start_date', sa.TIMESTAMP(timezone=True), nullable=True),
+                                     sa.Column('end_date', sa.TIMESTAMP(timezone=True), nullable=True),
+                                     sa.PrimaryKeyConstraint('id')
+                                     )
     populate_billing_cycles(billing_cycles)
 
     plans = op.create_table('plans',
-        sa.Column('id', sa.String(length=30), nullable=False),
-        sa.Column('description', sa.String(length=200), nullable=True),
-        sa.Column('mb_available', sa.BigInteger(), nullable=True),
-        sa.Column('is_unlimited', sa.Boolean(), nullable=True),
-        sa.PrimaryKeyConstraint('id')
-    )
+                            sa.Column('id', sa.String(length=30), nullable=False),
+                            sa.Column('description', sa.String(length=200), nullable=True),
+                            sa.Column('mb_available', sa.BigInteger(), nullable=True),
+                            sa.Column('is_unlimited', sa.Boolean(), nullable=True),
+                            sa.PrimaryKeyConstraint('id')
+                            )
     populate_plans(plans)
 
-    att_plan_versions = op.create_table('att_plan_versions',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('subscription_id', sa.Integer(), nullable=False),
-        sa.Column('plan_id', sa.String(length=30), nullable=False),
-        sa.Column('start_effective_date', sa.TIMESTAMP(timezone=True), nullable=False),
-        sa.Column('end_effective_date', sa.TIMESTAMP(timezone=True), nullable=False),
-        sa.Column('mb_available', sa.BigInteger(), nullable=True),
-        sa.ForeignKeyConstraint(['plan_id'], ['plans.id'], name=op.f('fk_att_plans_version_plan_id')),
-        sa.ForeignKeyConstraint(['subscription_id'], ['subscriptions.id'], name=op.f('fk_att_plans_version_subscription_id')),
-        sa.PrimaryKeyConstraint('id', name=op.f('pk_att_plans_version'))
-    )
-    populate_att_plan_versions(att_plan_versions)
-
     subscriptions = op.create_table('subscriptions',
-        sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('phone_number', sa.String(length=10), nullable=True),
-        sa.Column('status', postgresql.ENUM('new', 'active', 'suspended', 'expired', name='subscriptionstatus'), nullable=True),
-        sa.Column('plan_id', sa.String(length=30), nullable=False),
-        sa.ForeignKeyConstraint(['plan_id'], ['plans.id'], ),
-        sa.PrimaryKeyConstraint('id')
-    )
+                                    sa.Column('id', sa.Integer(), nullable=False),
+                                    sa.Column('phone_number', sa.String(length=10), nullable=True),
+                                    sa.Column('status', postgresql.ENUM('new', 'active', 'suspended', 'expired',
+                                                                        name='subscriptionstatus'), nullable=True),
+                                    sa.Column('plan_id', sa.String(length=30), nullable=False),
+                                    sa.ForeignKeyConstraint(['plan_id'], ['plans.id'], ),
+                                    sa.PrimaryKeyConstraint('id')
+                                    )
     populate_subscriptions(subscriptions)
+
+    att_plan_versions = op.create_table('att_plan_versions',
+                                        sa.Column('id', sa.Integer(), nullable=False),
+                                        sa.Column('subscription_id', sa.Integer(), nullable=False),
+                                        sa.Column('plan_id', sa.String(length=30), nullable=False),
+                                        sa.Column('start_effective_date', sa.TIMESTAMP(timezone=True), nullable=False),
+                                        sa.Column('end_effective_date', sa.TIMESTAMP(timezone=True), nullable=False),
+                                        sa.Column('mb_available', sa.BigInteger(), nullable=True),
+                                        sa.ForeignKeyConstraint(['plan_id'], ['plans.id'],
+                                                                name=op.f('fk_att_plans_version_plan_id')),
+                                        sa.ForeignKeyConstraint(['subscription_id'], ['subscriptions.id'],
+                                                                name=op.f('fk_att_plans_version_subscription_id')),
+                                        sa.PrimaryKeyConstraint('id', name=op.f('pk_att_plans_version'))
+                                        )
+    populate_att_plan_versions(att_plan_versions)
 
 
 def downgrade():

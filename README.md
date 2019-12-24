@@ -41,3 +41,10 @@ Everything is set up, including the database and some seed data. All you need to
 2. Add an endpoint for `/api/subscriptions/{id}/att_plan_version/`. This should do the following:
 - Accept a `billing_cycle_id` as a request parameter. If not provided, use the current billing cycle.
 - Return the att plan that was effective for a given billing cycle with the effective date fields and the `mb_available`.
+
+##The problems I faced by
+1. BigInteger field in PlanSchema (was fixed in second edition of challenge)
+2. Broken initial revision. att_plan_versions table was created in it before subscriptions table. But AttPlan has ForeignKey on Subscription. I fixed it by changing order of table creating in update method in revision.
+3. Use of string to refer to Plan class in Subscription model in circular importing. I fixed this by replacing the string with import.
+4. Bidirectional relationship in ATTPlanVersion (subscription field) without adding a second relationship() in Subscription model. I fixed it by adding necessary field.
+5. Initial revision didn't contain all changes in tables. I created new one.

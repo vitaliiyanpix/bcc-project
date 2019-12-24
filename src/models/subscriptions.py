@@ -5,6 +5,7 @@ from enum import Enum
 from sqlalchemy.dialects.postgresql import ENUM
 
 from src.models.base import db
+from .plans import Plan, ATTPlanVersion
 
 
 class SubscriptionStatus(Enum):
@@ -27,7 +28,8 @@ class Subscription(db.Model):
     expiry_date = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
 
     plan_id = db.Column(db.String(30), db.ForeignKey("plans.id"), nullable=False)
-    plan = db.relationship("Plan", foreign_keys=[plan_id], lazy="select")
+    plan = db.relationship(Plan, foreign_keys=[plan_id], lazy="select")
+    att_plan_versions = db.relationship(ATTPlanVersion, back_populates='subscription')
 
     def __repr__(self):  # pragma: no cover
         return (
