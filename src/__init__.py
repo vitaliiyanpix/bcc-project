@@ -33,6 +33,8 @@ def create_app(config_obj=None):
 
     migrate.init_app(app, db)
 
+    from src.models import cycles, plans, subscriptions
+
     from src.routes import register_routes
     register_routes(app)
 

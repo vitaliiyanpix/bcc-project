@@ -48,3 +48,4 @@ Everything is set up, including the database and some seed data. All you need to
 3. Use of string to refer to Plan class in Subscription model in circular importing. I fixed this by replacing the string with import.
 4. Bidirectional relationship in ATTPlanVersion (subscription field) without adding a second relationship() in Subscription model. I fixed it by adding necessary field.
 5. Initial revision didn't contain all changes in tables. I created new one.
+6. Flask-Migrate couldn't detect models in src.models.cycles module. I have imported all models modules in src/\__init\__.py. 
